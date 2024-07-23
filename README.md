@@ -61,7 +61,11 @@ Mapbox Polygon Editor is a web application that allows users to interact with a 
    DB_USER=your_db_user
    DB_PASSWORD=your_db_password
    DB_NAME=your_db_name
-   MAPBOX_ACCESS_TOKEN=your_mapbox_access_token
+   ```
+   
+   Create a `.env` file in the `frontend` directory with the following contents:
+   ```
+   REACT_APP_MAPBOX_ACCESS_TOKEN=your_mapbox_access_token
    ```
 
 5. **Set up PostgreSQL database:**
