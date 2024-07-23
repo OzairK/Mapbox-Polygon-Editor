@@ -1,5 +1,7 @@
 import React, { useRef, useEffect, useState } from 'react';
 import mapboxgl from 'mapbox-gl';
+import MapboxDraw from "@mapbox/mapbox-gl-draw";
+import '@mapbox/mapbox-gl-draw/dist/mapbox-gl-draw.css'
 import './Map.css';
 
 mapboxgl.accessToken = process.env.REACT_APP_MAPBOX_ACCESS_TOKEN;
@@ -19,6 +21,23 @@ const Map = () => {
       center: [lng, lat],
       zoom: zoom
     });
+
+    const Draw = new MapboxDraw({
+      displayControlsDefault: false,
+      // Select which mapbox-gl-draw control buttons to add to the map.
+      controls: {
+          polygon: true,
+          trash: true
+      },
+      // Set mapbox-gl-draw to draw by default.
+      // The user does not have to click the polygon control button first.
+      defaultMode: 'draw_polygon'
+    });
+    map.addControl(Draw, 'top-left');
+    map.on('draw.create', (e)=>{
+      // consoling geojson object of drawn polygon
+      console.log(e.features)
+    })
 
     // Add navigation control (the +/- zoom buttons)
     map.addControl(new mapboxgl.NavigationControl(), 'top-right');
