@@ -34,8 +34,8 @@ Mapbox Polygon Editor is a web application that allows users to interact with a 
 
 1. **Clone the repository:**
    ```bash
-   git clone https://github.com/OzairK/fullStackMapping.git
-   cd mapbox-project
+   git clone https://github.com/OzairK/Mapbox-Polygon-Editor.git
+   cd  <cloned repo directory>
    ```
 
 2. **Install frontend dependencies:**
