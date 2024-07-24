@@ -33,7 +33,7 @@ const Map = () => {
       // The user does not have to click the polygon control button first.
       defaultMode: 'draw_polygon'
     });
-    map.addControl(Draw, 'top-left');
+    map.addControl(Draw, 'top-right');
     map.on('draw.create', (e)=>{
       // consoling geojson object of drawn polygon
       console.log(e.features)
