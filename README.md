@@ -61,6 +61,7 @@ Mapbox Polygon Editor is a web application that allows users to interact with a 
    DB_USER=your_db_user
    DB_PASSWORD=your_db_password
    DB_NAME=your_db_name
+   DB_PORT=your_db_port
    ```
    
    Create a `.env` file in the `frontend` directory with the following contents:

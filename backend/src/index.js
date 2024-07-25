@@ -1,20 +1,18 @@
-const express = require('express');
-const app = express();
-const db = require('./models')
+import express from 'express';
+import db from './models/index.js';
 
-const PORT = process.env.PORT || 5000;
+const app = express();
 
 app.use(express.json());
-
 app.get('/', (req, res) => {
   res.send('hello from backend');
 });
 
 
-
+// Sync models and start the server
 const startServer = async () => {
   try {
-    await db.sequelize.sync({ force: true }); 
+    await db.sequelize.sync();
     console.log('Database synchronized');
     const PORT = process.env.PORT || 5000;
     app.listen(PORT, () => {

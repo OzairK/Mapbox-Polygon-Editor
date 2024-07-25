@@ -1,5 +1,9 @@
-require('dotenv').config();
-const { Client } = require('pg');
+import dotenv from 'dotenv';
+import pkg from 'pg';
+
+const { Client } = pkg;
+
+dotenv.config();
 
 const {
   DB_HOST,

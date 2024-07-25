@@ -1,40 +1,31 @@
 import { Model, DataTypes } from 'sequelize';
 
-class Polygon extends Model {
+class Session extends Model {
   static init(sequelize) {
     return super.init({
-      polygon_id: {
+      session_id: {
         type: DataTypes.UUID,
         primaryKey: true,
         defaultValue: DataTypes.UUIDV4
       },
-      session_id: {
-        type: DataTypes.UUID,
-        allowNull: false
-      },
-      name: DataTypes.STRING,
-      geom: DataTypes.GEOMETRY('Polygon', 4326),
       created_at: {
         type: DataTypes.DATE,
         defaultValue: DataTypes.NOW
       },
-      updated_at: {
-        type: DataTypes.DATE,
-        defaultValue: DataTypes.NOW
-      }
+      expires_at: DataTypes.DATE
     }, {
       sequelize,
-      modelName: 'Polygon',
+      modelName: 'Session',
       timestamps: false
     });
   }
 
   static associate(models) {
-    Polygon.belongsTo(models.Session, {
+    Session.hasMany(models.Polygon, {
       foreignKey: 'session_id',
-      as: 'session'
+      as: 'polygons'
     });
   }
 }
 
-export default Polygon;
+export default Session;
