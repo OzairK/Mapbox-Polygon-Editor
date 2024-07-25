@@ -1,5 +1,7 @@
 import express from 'express';
 import db from './models/index.js';
+import polygonRoutes from './routes/polygonRoutes.js'
+import sessionRoutes from './routes/sessionRoutes.js'
 
 const app = express();
 
@@ -8,6 +10,9 @@ app.get('/', (req, res) => {
   res.send('hello from backend');
 });
 
+// Routes
+app.use('/api/polygons', polygonRoutes);
+app.use('/api/sessions', sessionRoutes);
 
 // Sync models and start the server
 const startServer = async () => {
