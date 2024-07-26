@@ -49,7 +49,7 @@ function App() {
           geoJson: {
             id: polygon.polygon_id,
             type: 'Feature',
-            properties: {},
+            properties: {name: polygon.name},
             geometry: polygon.geom
           }
         };
@@ -77,7 +77,7 @@ function App() {
           geoJson: {
             id: newPolygon.polygon_id,
             type: 'Feature',
-            properties: {},
+            properties: {name: newPolygon.name},
             geometry: newPolygon.geom
           }
         }
@@ -89,9 +89,16 @@ function App() {
     }
   };
 
-  const handleUpdate = async (polygon) => {
+  const handleUpdate = async (updatedPolygonGeoJson) => {
     try {
-      const updatedPolygon = await polygonNetwork.updatePolygon(polygon.id, polygon.name, polygon);
+      const existingName = updatedPolygonGeoJson.properties.name  
+
+      const updatedPolygon = await polygonNetwork.updatePolygon(
+        updatedPolygonGeoJson.id,
+        existingName,
+        updatedPolygonGeoJson
+      );
+  
       setPolygons(prevPolygons => ({
         ...prevPolygons,
         [updatedPolygon.polygon_id]: {
@@ -100,7 +107,7 @@ function App() {
           geoJson: {
             id: updatedPolygon.polygon_id,
             type: 'Feature',
-            properties: {},
+            properties: {name: existingName},
             geometry: updatedPolygon.geom
           }
         }

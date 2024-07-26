@@ -43,6 +43,7 @@ const Map = ({ openModal, setCurrentPolygon, handleUpdate, handleDelete, polygon
 
     map.on('draw.update', (e) => {
       const polygon = e.features[0];
+      setCurrentPolygon(polygon);
       handleUpdate(polygon);
     });
 
