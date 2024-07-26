@@ -41,4 +41,14 @@ const deletePolygon = async (req, res) => {
   }
 };
 
-export { createPolygon, updatePolygon, deletePolygon };
+const getAllPolygons = async (req, res) => {
+  const sessionId = req.session.dataValues.session_id;
+  try {
+    const polygons = await polygonService.getAllPolygons(sessionId);
+    res.status(200).json(polygons);
+  } catch (error) {
+    res.status(500).json({ error: 'Internal server error' });
+  }
+};
+
+export { createPolygon, updatePolygon, deletePolygon, getAllPolygons };

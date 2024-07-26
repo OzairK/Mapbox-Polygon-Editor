@@ -30,8 +30,18 @@ const deletePolygon = async (id) => {
   return false;
 };
 
+const getAllPolygons = async (sessionId) => {
+  const polygons = await Polygon.findAll({
+    where: {
+      session_id: sessionId
+    }
+  });
+  return polygons;
+};
+
 export default {
   createPolygon,
   updatePolygon,
-  deletePolygon
+  deletePolygon,
+  getAllPolygons
 };

@@ -39,8 +39,19 @@ const deletePolygon = async (id) => {
   return response.data;
 };
 
+const getAllPolygons = async () => {
+  const sessionId = sessionStorage.getItem('sessionId');
+  if (!sessionId) {
+    throw new Error('Session ID not found');
+  }
+
+  const response = await api.get('/polygons');
+  return response.data;
+};
+
 export default {
   createPolygon,
   updatePolygon,
   deletePolygon,
+  getAllPolygons
 };

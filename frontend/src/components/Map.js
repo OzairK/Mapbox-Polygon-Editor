@@ -6,8 +6,10 @@ import './Map.css';
 
 mapboxgl.accessToken = process.env.REACT_APP_MAPBOX_ACCESS_TOKEN;
 
-const Map = ({ openModal, setCurrentPolygon, handleUpdate, handleDelete }) => {
+const Map = ({ openModal, setCurrentPolygon, handleUpdate, handleDelete, polygons }) => {
   const mapContainerRef = useRef(null);
+  const mapRef = useRef(null);
+  const drawRef = useRef(null);
 
   const [lng, setLng] = useState(5);
   const [lat, setLat] = useState(34);
@@ -29,6 +31,7 @@ const Map = ({ openModal, setCurrentPolygon, handleUpdate, handleDelete }) => {
       },
       defaultMode: 'draw_polygon'
     });
+    drawRef.current = Draw;
     map.addControl(Draw, 'top-right');
     map.addControl(new mapboxgl.NavigationControl(), 'top-right');
     
@@ -54,8 +57,25 @@ const Map = ({ openModal, setCurrentPolygon, handleUpdate, handleDelete }) => {
       setZoom(map.getZoom().toFixed(2));
     });
 
+    mapRef.current = map;
+
     return () => map.remove();
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
+  useEffect(() => {
+    if (drawRef.current && mapRef.current && polygons) {
+      const features = Object.values(polygons).map(polygon => {
+        if (polygon.geoJson && polygon.geoJson.type && polygon.geoJson.geometry) {
+          return polygon.geoJson;
+        } else {
+          console.error('Invalid polygon data:', polygon);
+          return null;
+        }
+      }).filter(feature => feature !== null);
+
+      drawRef.current.set({ type: 'FeatureCollection', features });
+    }
+  }, [polygons]);
 
   return (
     <div>

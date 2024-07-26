@@ -16,6 +16,8 @@ function App() {
       if (!sessionId || !isSessionValid) {
         await sessionNetwork.createSession();
       }
+      
+      await fetchPolygons();
     };
 
     initializeSession();
@@ -24,6 +26,28 @@ function App() {
   const [polygons, setPolygons] = useState({});
   const [currentPolygon, setCurrentPolygon] = useState();
   const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const fetchPolygons = async () => {
+    try {
+      const polygons = await polygonNetwork.getAllPolygons();
+      const polygonsMap = polygons.reduce((acc, polygon) => {
+        acc[polygon.polygon_id] = {
+          id: polygon.polygon_id,
+          name: polygon.name,
+          geoJson: {
+            id: polygon.polygon_id,
+            type: 'Feature',
+            properties: {},
+            geometry: polygon.geom
+          }
+        };
+        return acc;
+      }, {});
+      setPolygons(polygonsMap);
+    } catch (error) {
+      console.error('Error fetching polygons:', error);
+    }
+  };
 
   const openModal = (polygon) => {
     setCurrentPolygon(polygon);
@@ -35,7 +59,16 @@ function App() {
       const newPolygon = await polygonNetwork.createPolygon(currentPolygon.id, name, currentPolygon);
       setPolygons(prevPolygons => ({
         ...prevPolygons,
-        [newPolygon.polygon_id]: {id: newPolygon.polygon_id, name: newPolygon.name, geoJson: newPolygon.geom} 
+        [newPolygon.polygon_id]: {
+          id: newPolygon.polygon_id,
+          name: newPolygon.name,
+          geoJson: {
+            id: newPolygon.polygon_id,
+            type: 'Feature',
+            properties: {},
+            geometry: newPolygon.geom
+          }
+        }
       }));
     } catch (error) {
       console.error('Error creating polygon:', error);
@@ -49,7 +82,16 @@ function App() {
       const updatedPolygon = await polygonNetwork.updatePolygon(polygon.id, polygon.name, polygon);
       setPolygons(prevPolygons => ({
         ...prevPolygons,
-        [updatedPolygon.polygon_id]: {id: updatedPolygon.polygon_id, name: updatedPolygon.name, geoJson: updatedPolygon.geom}
+        [updatedPolygon.polygon_id]: {
+          id: updatedPolygon.polygon_id,
+          name: updatedPolygon.name,
+          geoJson: {
+            id: updatedPolygon.polygon_id,
+            type: 'Feature',
+            properties: {},
+            geometry: updatedPolygon.geom
+          }
+        }
       }));
     } catch (error) {
       console.error('Error updating polygon:', error);
@@ -98,7 +140,7 @@ function App() {
       <div className="container">
         <PolygonPanel polygons={polygons} onEdit={handleNameEdit} />
         <div className="map-container">
-          <Map openModal={openModal} setCurrentPolygon={setCurrentPolygon} handleUpdate={handleUpdate} handleDelete={handleDelete} />
+          <Map openModal={openModal} setCurrentPolygon={setCurrentPolygon} handleUpdate={handleUpdate} handleDelete={handleDelete} polygons={polygons} />
         </div>
         <PolygonModal
           isOpen={isModalOpen}
