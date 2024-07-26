@@ -20,7 +20,7 @@ Mapbox Polygon Editor is a web application that allows users to interact with a 
 - **Frontend**: React, Mapbox GL Javascript
 - **Backend**: Node.js, Express
 - **Database**: PostgreSQL
-- **Others**: Redis (for caching), Jest (for unit testing)
+- **Others**: Jest (for unit testing)
 
 ## Getting Started
 
@@ -28,7 +28,7 @@ Mapbox Polygon Editor is a web application that allows users to interact with a 
 
 - Node.js
 - npm
-- PostgreSQL
+- PostgreSQL and PostGIS
 
 ### Installation
 
