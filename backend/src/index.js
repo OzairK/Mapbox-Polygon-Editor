@@ -2,17 +2,21 @@ import express from 'express';
 import db from './models/index.js';
 import polygonRoutes from './routes/polygonRoutes.js'
 import sessionRoutes from './routes/sessionRoutes.js'
+import sessionMiddleware from './middleware/sessionMiddleware.js';
 
 const app = express();
 
-app.use(express.json());
-app.get('/', (req, res) => {
+//health check
+app.get('/live', (req, res) => {
   res.send('hello from backend');
 });
 
-// Routes
-app.use('/api/polygons', polygonRoutes);
+// Routes and Middleware
+app.use(express.json());
 app.use('/api/sessions', sessionRoutes);
+// confirm the session exists and is not expired
+app.use(sessionMiddleware)
+app.use('/api/polygons', polygonRoutes);
 
 // Sync models and start the server
 const startServer = async () => {

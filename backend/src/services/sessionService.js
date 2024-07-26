@@ -5,6 +5,15 @@ const createSession = async () => {
   return session;
 };
 
+const getSession = async (sessionId) => {
+  const session = await Session.findByPk(sessionId);
+  if (session && session.expires_at > new Date()) {
+    return session;
+  }
+  return null;
+};
+
 export default {
-  createSession
+  createSession,
+  getSession
 };

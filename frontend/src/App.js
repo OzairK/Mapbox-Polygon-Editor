@@ -3,6 +3,7 @@ import logo from './logo.svg';
 import './App.css';
 import Map from './components/Map'
 import PolygonPanel from './components/PolygonPanel';
+import sessionNetwork from './network/sessionNetwork';
 
 
 const polygons = [
@@ -76,6 +77,21 @@ const polygons = [
  }
 
  function App() {
+
+  useEffect(() => {
+    const initializeSession = async () => {
+      const sessionId = sessionStorage.getItem('sessionId');
+      const sessionExpiresAt = sessionStorage.getItem('sessionExpiresAt');
+      const isSessionValid = sessionExpiresAt && new Date(sessionExpiresAt) > new Date();
+
+      if (!sessionId || !isSessionValid) {
+        await sessionNetwork.createSession();
+      }
+    };
+
+    initializeSession();
+  }, []);
+  
   return (
     <div className="App">
       <div className="container">
