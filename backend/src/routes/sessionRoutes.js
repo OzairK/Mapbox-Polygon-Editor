@@ -1,8 +1,11 @@
 import express from 'express';
-import { createSession } from '../controllers/sessionController.js';
+import { createSession, getSession, getSessionUrl } from '../controllers/sessionController.js';
 
 const router = express.Router();
 
 router.post('/', createSession);
+router.get('/:sessionId', getSession);
+router.get('/:sessionId/url', getSessionUrl);
+
 
 export default router;

@@ -9,12 +9,24 @@ import polygonNetwork from './network/polygonNetwork';
 function App() {
   useEffect(() => {
     const initializeSession = async () => {
-      const sessionId = sessionStorage.getItem('sessionId');
+      const urlParams = new URLSearchParams(window.location.search);
+      const sessionIdFromUrl = urlParams.get('sessionId');
+      
+      const sessionId = sessionIdFromUrl || sessionStorage.getItem('sessionId');
       const sessionExpiresAt = sessionStorage.getItem('sessionExpiresAt');
       const isSessionValid = sessionExpiresAt && new Date(sessionExpiresAt) > new Date();
 
-      if (!sessionId || !isSessionValid) {
+      if (sessionIdFromUrl) {
+        try {
+          await sessionNetwork.getSession(sessionIdFromUrl);
+        } catch (error) {
+          console.error('Error retrieving session from URL:', error);
+          await sessionNetwork.createSession();
+        }
+      } else if (!sessionId || !isSessionValid) {
         await sessionNetwork.createSession();
+      } else {
+        await sessionNetwork.getSession(sessionId);
       }
       
       await fetchPolygons();
@@ -131,6 +143,18 @@ function App() {
     }
   };
 
+  const handleShareLink = async () => {
+    try {
+      const sessionId = sessionStorage.getItem('sessionId');
+      const sessionUrl = await sessionNetwork.getSessionUrl(sessionId);
+      navigator.clipboard.writeText(sessionUrl);
+      alert('Shareable link copied to clipboard!');
+    } catch (error) {
+      console.error('Error generating share link:', error);
+    }
+  };
+  
+
   const closeModal = () => {
     setIsModalOpen(false);
   };
@@ -138,7 +162,7 @@ function App() {
   return (
     <div className="App">
       <div className="container">
-        <PolygonPanel polygons={polygons} onEdit={handleNameEdit} />
+        <PolygonPanel polygons={polygons} onEdit={handleNameEdit} onShareLink={handleShareLink} />
         <div className="map-container">
           <Map openModal={openModal} setCurrentPolygon={setCurrentPolygon} handleUpdate={handleUpdate} handleDelete={handleDelete} polygons={polygons} />
         </div>

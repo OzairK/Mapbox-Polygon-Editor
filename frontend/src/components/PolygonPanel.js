@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import './PolygonPanel.css';
 import { FaEdit } from 'react-icons/fa';
 
-const PolygonPanel = ({ polygons, onEdit }) => {
+const PolygonPanel = ({ polygons, onEdit, onShareLink }) => {
   const [editPolygonId, setEditPolygonId] = useState(null);
   const [editPolygonName, setEditPolygonName] = useState('');
 
@@ -22,7 +22,10 @@ const PolygonPanel = ({ polygons, onEdit }) => {
 
   return (
     <div className="polygon-panel">
-      <h1>Polygons</h1>
+      <div className="polygon-panel-header">
+        <h1>Polygons</h1>
+        <button className="share-link-button" onClick={onShareLink}>Share Link</button>
+      </div>
       {Object.keys(polygons).length === 0 ? (
         <p>No polygons available</p>
       ) : (
