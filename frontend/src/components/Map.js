@@ -29,7 +29,6 @@ const Map = ({ openModal, setCurrentPolygon, handleUpdate, handleDelete, polygon
         polygon: true,
         trash: true
       },
-      defaultMode: 'draw_polygon'
     });
     drawRef.current = Draw;
     map.addControl(Draw, 'top-right');
