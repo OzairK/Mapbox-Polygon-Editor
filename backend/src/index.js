@@ -1,10 +1,13 @@
 import express from 'express';
 import db from './models/index.js';
+import cors from 'cors'
 import polygonRoutes from './routes/polygonRoutes.js'
 import sessionRoutes from './routes/sessionRoutes.js'
 import sessionMiddleware from './middleware/sessionMiddleware.js';
 
 const app = express();
+
+app.use(cors());
 
 //health check
 app.get('/live', (req, res) => {
