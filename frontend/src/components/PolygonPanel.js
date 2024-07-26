@@ -1,8 +1,25 @@
-import React from 'react';
+import React, { useState } from 'react';
 import './PolygonPanel.css';
 import { FaEdit } from 'react-icons/fa';
 
 const PolygonPanel = ({ polygons, onEdit }) => {
+  const [editPolygonId, setEditPolygonId] = useState(null);
+  const [editPolygonName, setEditPolygonName] = useState('');
+
+  const handleEditClick = (polygon) => {
+    setEditPolygonId(polygon.id);
+    setEditPolygonName(polygon.name);
+  };
+
+  const handleNameChange = (e) => {
+    setEditPolygonName(e.target.value);
+  };
+
+  const handleNameSave = (id) => {
+    onEdit(id, editPolygonName);
+    setEditPolygonId(null);
+  };
+
   return (
     <div className="polygon-panel">
       <h1>Polygons</h1>
@@ -12,8 +29,20 @@ const PolygonPanel = ({ polygons, onEdit }) => {
         Object.entries(polygons).map(([id, polygon]) => (
           <div className="polygon-card" key={id}>
             <div className="polygon-card-header">
-              <h3>{polygon.name}</h3>
-              <FaEdit onClick={() => onEdit(polygon)} />
+              {editPolygonId === id ? (
+                <input
+                  type="text"
+                  value={editPolygonName}
+                  onChange={handleNameChange}
+                  onBlur={() => handleNameSave(id)}
+                  autoFocus
+                />
+              ) : (
+                <>
+                  <h3>{polygon.name}</h3>
+                  <FaEdit onClick={() => handleEditClick(polygon)} />
+                </>
+              )}
             </div>
           </div>
         ))

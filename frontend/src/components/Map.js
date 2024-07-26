@@ -6,7 +6,7 @@ import './Map.css';
 
 mapboxgl.accessToken = process.env.REACT_APP_MAPBOX_ACCESS_TOKEN;
 
-const Map = ({ openModal, setCurrentPolygon }) => {
+const Map = ({ openModal, setCurrentPolygon, handleUpdate, handleDelete }) => {
   const mapContainerRef = useRef(null);
 
   const [lng, setLng] = useState(5);
@@ -30,13 +30,23 @@ const Map = ({ openModal, setCurrentPolygon }) => {
       defaultMode: 'draw_polygon'
     });
     map.addControl(Draw, 'top-right');
+    map.addControl(new mapboxgl.NavigationControl(), 'top-right');
+    
     map.on('draw.create', (e) => {
       const polygon = e.features[0];
       setCurrentPolygon(polygon);
       openModal(polygon);
     });
 
-    map.addControl(new mapboxgl.NavigationControl(), 'top-right');
+    map.on('draw.update', (e) => {
+      const polygon = e.features[0];
+      handleUpdate(polygon);
+    });
+
+    map.on('draw.delete', (e) => {
+      const polygon = e.features[0];
+      handleDelete(polygon.id);
+    });
 
     map.on('move', () => {
       setLng(map.getCenter().lng.toFixed(4));

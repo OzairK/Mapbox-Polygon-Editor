@@ -6,10 +6,6 @@ import sessionNetwork from './network/sessionNetwork';
 import PolygonModal from './components/PolygonModal';
 import polygonNetwork from './network/polygonNetwork';
 
-const handleEdit = () => {
-  console.log('this is a edit');
-};
-
 function App() {
   useEffect(() => {
     const initializeSession = async () => {
@@ -48,20 +44,61 @@ function App() {
     }
   };
 
-  const closeModal = () => {
-    setIsModalOpen(false);
+  const handleUpdate = async (polygon) => {
+    try {
+      const updatedPolygon = await polygonNetwork.updatePolygon(polygon.id, polygon.name, polygon);
+      setPolygons(prevPolygons => ({
+        ...prevPolygons,
+        [updatedPolygon.polygon_id]: {id: updatedPolygon.polygon_id, name: updatedPolygon.name, geoJson: updatedPolygon.geom}
+      }));
+    } catch (error) {
+      console.error('Error updating polygon:', error);
+    }
   };
 
-  const updatePolygon = (polygon) => {
-    console.log(polygon);
+  const handleDelete = async (polygonId) => {
+    try {
+      const formattedPolygonId = polygonId.replace(/-/g, '');
+      await polygonNetwork.deletePolygon(formattedPolygonId);
+      setPolygons(prevPolygons => {
+        const updatedPolygons = { ...prevPolygons };
+        const keyToDelete = Object.keys(updatedPolygons).find(key => key.replace(/-/g, '') === formattedPolygonId);
+        if (keyToDelete) {
+          delete updatedPolygons[keyToDelete];
+        }
+        return updatedPolygons;
+      });
+    } catch (error) {
+      console.error('Error deleting polygon:', error);
+    }
+  };
+
+  const handleNameEdit = async (id, newName) => {
+    try {
+      const polygon = polygons[id];
+      const updatedPolygon = await polygonNetwork.updatePolygon(id, newName, polygon.geoJson);
+      setPolygons(prevPolygons => ({
+        ...prevPolygons,
+        [id]: {
+          ...prevPolygons[id],
+          name: updatedPolygon.name,
+        }
+      }));
+    } catch (error) {
+      console.error('Error updating polygon name:', error);
+    }
+  };
+
+  const closeModal = () => {
+    setIsModalOpen(false);
   };
 
   return (
     <div className="App">
       <div className="container">
-        <PolygonPanel polygons={polygons} onEdit={handleEdit} />
+        <PolygonPanel polygons={polygons} onEdit={handleNameEdit} />
         <div className="map-container">
-          <Map openModal={openModal} setCurrentPolygon={setCurrentPolygon} />
+          <Map openModal={openModal} setCurrentPolygon={setCurrentPolygon} handleUpdate={handleUpdate} handleDelete={handleDelete} />
         </div>
         <PolygonModal
           isOpen={isModalOpen}

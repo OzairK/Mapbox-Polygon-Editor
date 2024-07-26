@@ -2,8 +2,9 @@ import polygonService from '../services/polygonService.js';
 
 const createPolygon = async (req, res) => {
   const { name, geoJson, id } = req.body;
+  const sessionId = req.session.dataValues.session_id;
   try {
-    const polygon = await polygonService.createPolygon(name, geoJson, id);
+    const polygon = await polygonService.createPolygon(name, geoJson, id, sessionId);
     res.status(201).json(polygon);
   } catch (error) {
     console.log(error)

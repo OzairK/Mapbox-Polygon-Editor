@@ -1,9 +1,9 @@
 import  Polygon from '../models/polygon.js'
 
-const createPolygon = async (name, geoJson, id) => {
+const createPolygon = async (name, geoJson, id, sessionId) => {
   const polygon = await Polygon.create({
     polygon_id: id,
-    session_id: '9f103cb4-df1e-47af-9e66-facd325ffcc9',
+    session_id: sessionId,
     name,
     geom: geoJson.geometry
   });
