@@ -4,6 +4,7 @@ import Map from './components/Map';
 import PolygonPanel from './components/PolygonPanel';
 import sessionNetwork from './network/sessionNetwork';
 import PolygonModal from './components/PolygonModal';
+import polygonNetwork from './network/polygonNetwork';
 
 const handleEdit = () => {
   console.log('this is a edit');
@@ -26,7 +27,6 @@ function App() {
 
   const [polygons, setPolygons] = useState({});
   const [currentPolygon, setCurrentPolygon] = useState();
-
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const openModal = (polygon) => {
@@ -34,15 +34,18 @@ function App() {
     setIsModalOpen(true);
   };
 
-  const handleSave = (name) => {  
-    setPolygons(prevPolygons => ({
-      ...prevPolygons,
-      [currentPolygon.id]: {
-        id: currentPolygon.id,
-        name: name,
-        geoJson: currentPolygon
-      }
-    }));  
+  const handleSave = async (name) => {
+    try {
+      const newPolygon = await polygonNetwork.createPolygon(currentPolygon.id, name, currentPolygon);
+      setPolygons(prevPolygons => ({
+        ...prevPolygons,
+        [newPolygon.polygon_id]: {id: newPolygon.polygon_id, name: newPolygon.name, geoJson: newPolygon.geom} 
+      }));
+    } catch (error) {
+      console.error('Error creating polygon:', error);
+    } finally {
+      closeModal();
+    }
   };
 
   const closeModal = () => {
@@ -52,7 +55,7 @@ function App() {
   const updatePolygon = (polygon) => {
     console.log(polygon);
   };
-  
+
   return (
     <div className="App">
       <div className="container">
@@ -60,7 +63,6 @@ function App() {
         <div className="map-container">
           <Map openModal={openModal} setCurrentPolygon={setCurrentPolygon} />
         </div>
-        <button onClick={openModal}>Open Modal</button>
         <PolygonModal
           isOpen={isModalOpen}
           onRequestClose={closeModal}

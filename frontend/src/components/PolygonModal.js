@@ -24,7 +24,6 @@ const PolygonModal = ({ isOpen, onRequestClose, onSave }) => {
 
   const handleSave = () => {
     onSave(name);
-    onRequestClose();
     setName('')
   };
 
