@@ -154,7 +154,25 @@ function App() {
     try {
       const sessionId = sessionStorage.getItem('sessionId');
       const sessionUrl = await sessionNetwork.getSessionUrl(sessionId);
-      navigator.clipboard.writeText(sessionUrl);
+      
+      if (!navigator.clipboard) {
+        // Clipboard API not available, use fallback
+        const textArea = document.createElement('textarea');
+        textArea.value = sessionUrl;
+        document.body.appendChild(textArea);
+        textArea.focus();
+        textArea.select();
+        try {
+          document.execCommand('copy');
+          alert('Shareable link copied to clipboard!');
+        } catch (err) {
+          console.error('Fallback: Oops, unable to copy', err);
+        }
+        document.body.removeChild(textArea);
+        return;
+      }
+      
+      await navigator.clipboard.writeText(sessionUrl);
       alert('Shareable link copied to clipboard!');
     } catch (error) {
       console.error('Error generating share link:', error);
